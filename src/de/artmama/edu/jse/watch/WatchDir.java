@@ -45,8 +45,8 @@ public class WatchDir {
 
     private static final Logger LOG = LoggerFactory.getLogger(WatchDir.class);
     
-	private static final String WATCH_TARGET_PATH = "e:/tmp/_upload/";
-	
+    private static final String WATCH_TARGET_PATH_PROPERTY_NAME = "watch.target.path";
+    
 	private static final String M_IN = "-->|";
 	private static final String M_M = "---|";
 	private static final String M_OUT = "<--|";
@@ -208,7 +208,14 @@ public class WatchDir {
         // register directory and process its events
 //        Path dir = Paths.get(args[dirArg]);
         
-        Path dir = Paths.get(WATCH_TARGET_PATH);
+    	String watchTargetPath = System.getProperties().getProperty(WATCH_TARGET_PATH_PROPERTY_NAME);
+    	if (watchTargetPath == null) {
+    	    LOG.error("Path to watch is not specified! Set the value for property:" + WATCH_TARGET_PATH_PROPERTY_NAME);
+    	    LOG.info(M_OUT);
+    	    System.exit(-1);
+    	}
+    	
+        Path dir = Paths.get(watchTargetPath);
         boolean recursive = true;
         WatchDir watchDir = new WatchDir(dir, recursive);
         watchDir.init();
